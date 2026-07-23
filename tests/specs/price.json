@@ -1,19 +1,33 @@
 [
   {
-    "name": "/price",
+    "name": "/price with empty watchlist shows empty state",
     "steps": [
       {
+        "send": { "text": "/price" },
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Check current price of a specific coin or the user's entire watchlist"
+              "text": "Your watchlist is empty — add a coin first, or try /price BTC."
             }
           }
-        ],
-        "send": {
-          "text": "/price"
-        }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/price with invalid blank-ish ticker",
+    "steps": [
+      {
+        "send": { "text": "/price x" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "That doesn't look like a ticker. Try /price BTC."
+            }
+          }
+        ]
       }
     ]
   }

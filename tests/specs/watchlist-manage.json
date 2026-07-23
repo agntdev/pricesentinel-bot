@@ -1,19 +1,39 @@
 [
   {
-    "name": "Manage Watchlist",
+    "name": "Manage Watchlist shows empty state and coin buttons",
     "steps": [
       {
+        "send": { "callback": "watchlist:manage" },
         "expect": [
+          { "method": "answerCallbackQuery" },
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "Open watchlist management interface with common coin buttons and ticker input"
+              "text": "Your watchlist\nNo coins yet — tap a common coin or add another ticker."
             }
           }
-        ],
-        "send": {
-          "callback": "watchlist:manage"
-        }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Add other ticker prompts for free-form input",
+    "steps": [
+      {
+        "send": { "callback": "watchlist:manage" },
+        "expect": [{ "method": "editMessageText" }]
+      },
+      {
+        "send": { "callback": "watchlist:other" },
+        "expect": [
+          { "method": "answerCallbackQuery" },
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "Send the ticker symbol (e.g. SOL or DOGE). I'll check it on Binance before adding."
+            }
+          }
+        ]
       }
     ]
   }

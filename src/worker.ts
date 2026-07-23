@@ -14,6 +14,7 @@ import { webhookCallback, Composer, type Bot } from "grammy";
 import { buildBot, type Ctx } from "./bot.js";
 import { handlers } from "./handlers.generated.js";
 import { createDurableSessionStorage, type WorkerEnv } from "./toolkit/session/durable.js";
+import { runMonitorCycle } from "./lib/monitor.js";
 
 export { ChatDO } from "./toolkit/session/durable.js";
 
@@ -64,6 +65,26 @@ export default {
 
     if (url.pathname === "/health") {
       return Response.json({ ok: true, runtime: "cloudflare-workers" });
+    }
+
+    // Scheduled price poll + morning summaries (wire as a Cloudflare Cron Trigger
+    // or external scheduler POST). Optional CRON_SECRET must match when set.
+    if (request.method === "POST" && url.pathname === "/cron") {
+      const secret = (env as WorkerEnv & { CRON_SECRET?: string }).CRON_SECRET;
+      if (secret && request.headers.get("X-Cron-Secret") !== secret) {
+        return new Response("forbidden", { status: 403 });
+      }
+      const bot = await getBot(env);
+      await runMonitorCycle(async (chatId, text) => {
+        try {
+          await bot.api.sendMessage(chatId, text);
+        } catch (e) {
+          const msg = String((e as Error)?.message ?? e);
+          if (msg.includes("403") || msg.includes("Forbidden") || msg.includes("blocked")) return;
+          throw e;
+        }
+      });
+      return Response.json({ ok: true });
     }
 
     if (request.method === "POST" && url.pathname === "/tg") {

@@ -1,17 +1,27 @@
 import { Composer } from "grammy";
+import type { Ctx } from "../bot.js";
+import { inlineButton, registerMainMenuItem } from "../toolkit/index.js";
+import { ensureProfile } from "../lib/domain.js";
+import { buildSummaryText } from "../lib/summary.js";
+import { withBack } from "../lib/ui.js";
 
-// SCAFFOLD — generated from the bot blueprint BEFORE the agent runs.
-// Keep a LIVE registration (.command / .callbackQuery / …) so this feature is
-// never an empty stub. Replace the reply body with real logic + copy; if you
-// change the user-facing text, update tests/specs to match EXACTLY.
-// Do NOT rewrite src/bot.ts — buildBot() already auto-loads this module.
-// Menu: wire this into /start via registerMainMenuItem({ label: "View Summary", data: "summary:view" }) if the toolkit exposes it.
+registerMainMenuItem({ label: "View Summary", data: "summary:view", order: 30 });
 
-const composer = new Composer();
+const composer = new Composer<Ctx>();
 
 composer.callbackQuery("summary:view", async (ctx) => {
   await ctx.answerCallbackQuery();
-  await ctx.reply("Show morning summary of top movers and recent alerts");
+  const uid = ctx.from?.id;
+  if (!uid) return;
+  await ensureProfile(uid);
+
+  const text = await buildSummaryText(uid);
+  const markup = withBack([[inlineButton("Refresh", "summary:view")]]);
+  try {
+    await ctx.editMessageText(text, { reply_markup: markup });
+  } catch {
+    await ctx.reply(text, { reply_markup: markup });
+  }
 });
 
 export default composer;

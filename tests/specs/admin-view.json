@@ -1,19 +1,18 @@
 [
   {
-    "name": "Admin Dashboard",
+    "name": "Admin Dashboard denies non-owners",
     "steps": [
       {
+        "send": { "callback": "admin:view" },
         "expect": [
+          { "method": "answerCallbackQuery" },
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "Show owner analytics dashboard with user stats and alert frequencies"
+              "text": "That dashboard is only for the bot owner."
             }
           }
-        ],
-        "send": {
-          "callback": "admin:view"
-        }
+        ]
       }
     ]
   }
