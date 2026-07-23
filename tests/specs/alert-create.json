@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Set Alert",
+    "steps": [
+      {
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "Start guided alert creation flow for selected coin"
+            }
+          }
+        ],
+        "send": {
+          "callback": "alert:create"
+        }
+      }
+    ]
+  }
+]
