@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Manage Watchlist",
+    "steps": [
+      {
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "Open watchlist management interface with common coin buttons and ticker input"
+            }
+          }
+        ],
+        "send": {
+          "callback": "watchlist:manage"
+        }
+      }
+    ]
+  }
+]
