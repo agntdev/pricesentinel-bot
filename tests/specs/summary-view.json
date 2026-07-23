@@ -1,19 +1,18 @@
 [
   {
-    "name": "View Summary",
+    "name": "View Summary empty watchlist",
     "steps": [
       {
+        "send": { "callback": "summary:view" },
         "expect": [
+          { "method": "answerCallbackQuery" },
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "Show morning summary of top movers and recent alerts"
+              "text": "Your morning summary is empty — no coins on your watchlist yet.\nTap Manage Watchlist to add BTC, ETH, or TON."
             }
           }
-        ],
-        "send": {
-          "callback": "summary:view"
-        }
+        ]
       }
     ]
   }

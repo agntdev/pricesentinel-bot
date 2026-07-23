@@ -1,19 +1,18 @@
 [
   {
-    "name": "Set Alert",
+    "name": "Set Alert with empty watchlist shows empty state",
     "steps": [
       {
+        "send": { "callback": "alert:create" },
         "expect": [
+          { "method": "answerCallbackQuery" },
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "Start guided alert creation flow for selected coin"
+              "text": "No coins on your watchlist yet — add one before setting an alert.\nTap Manage Watchlist to get started."
             }
           }
-        ],
-        "send": {
-          "callback": "alert:create"
-        }
+        ]
       }
     ]
   }

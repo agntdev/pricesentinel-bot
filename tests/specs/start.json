@@ -1,13 +1,61 @@
 [
   {
-    "name": "/start replies with the welcome + main menu",
+    "name": "/start welcomes a new user and asks for timezone",
     "steps": [
       {
         "send": { "text": "/start" },
         "expect": [
           {
             "method": "sendMessage",
-            "payload": { "text": "👋 Welcome! Tap a button below to get started." }
+            "payload": {
+              "text": "PriceSentinel watches Binance spot prices for you.\n\nAdd coins, set alerts, and get a morning summary — all from the buttons below.\n\nFirst, pick your timezone so quiet hours and morning summaries land at the right time."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "timezone selection completes onboarding and shows main menu",
+    "steps": [
+      {
+        "send": { "text": "/start" },
+        "expect": [{ "method": "sendMessage" }]
+      },
+      {
+        "send": { "callback": "tz:UTC" },
+        "expect": [
+          { "method": "answerCallbackQuery" },
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "Timezone set to UTC. Quiet hours default to 00:00–08:00; alert cooldown is 24h.\n\nPriceSentinel watches Binance spot prices for you.\n\nAdd coins, set alerts, and get a morning summary — all from the buttons below."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "back to menu re-renders welcome",
+    "steps": [
+      {
+        "send": { "text": "/start" },
+        "expect": [{ "method": "sendMessage" }]
+      },
+      {
+        "send": { "callback": "tz:UTC" },
+        "expect": [{ "method": "editMessageText" }]
+      },
+      {
+        "send": { "callback": "menu:main" },
+        "expect": [
+          { "method": "answerCallbackQuery" },
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "PriceSentinel watches Binance spot prices for you.\n\nAdd coins, set alerts, and get a morning summary — all from the buttons below."
+            }
           }
         ]
       }
